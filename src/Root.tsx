@@ -23,7 +23,8 @@ const Root = () => (
             <Route path="recipes" element={<RecipesPage />} />
             <Route path="recipes/new" element={<NewRecipeFormPage />} />
             <Route path="recipes/:id" element={<RecipeDetailsPage />} />
-            <Route path="my-recipes" element={<MyRecipesPage />} /> 
+            <Route path="my-recipes" element={<MyRecipesPage />} />
+            <Route path="recipes/edit/:id" element={<NewRecipeFormPage />} />
             <Route path="sign-in" element={<PublicRoute><SignInPage /></PublicRoute>} />
             <Route path="register" element={<PublicRoute><SignUpPage /></PublicRoute>} />
           </Route>

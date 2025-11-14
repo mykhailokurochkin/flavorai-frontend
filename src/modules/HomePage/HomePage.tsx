@@ -17,9 +17,20 @@ const HomePage = () => {
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-8">Featured Recipes</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Recipe />
-            <Recipe />
-            <Recipe />
+            <Recipe
+              id="1"
+              title="Classic Spaghetti Carbonara"
+              cookingTime="30 minutes"
+              difficulty="Easy"
+              imageUrl="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80"
+            />
+            <Recipe
+              id="2"
+              title="Thai Red Curry"
+              cookingTime="45 minutes"
+              difficulty="Medium"
+              imageUrl="https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=600&q=80"
+            />
           </div>
         </div>
       </section>

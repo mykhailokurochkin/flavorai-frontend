@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import type { Recipe as RecipeType } from '../../types/recipe';
 
 interface RecipeProps {
   id: string;
@@ -19,7 +18,7 @@ const Recipe: React.FC<RecipeProps> = ({ id, title, imageUrl, cookingTime, diffi
           <div className="w-full h-full flex items-center justify-center text-gray-400">No Image</div>
         )}
       </div>
-      <div className="p-4 flex flex-col flex-grow">
+      <div className="p-4 flex flex-col grow">
         <h3 className="text-lg font-semibold text-gray-800 mb-2 truncate">{title}</h3>
         <div className="flex items-center text-sm text-gray-500 mb-2">
           <span>Time: {cookingTime}</span>

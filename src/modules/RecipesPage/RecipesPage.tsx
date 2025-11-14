@@ -1,13 +1,27 @@
+import { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import { useQuery } from '@tanstack/react-query';
 import Recipe from "../../components/Recipe/Recipe";
 import { getAllRecipes } from "../../services/recipeService";
-import type { Recipe as RecipeType } from '../../types/recipe'; // Alias Recipe type to avoid conflict
+import type { Recipe as RecipeType } from '../../types/recipe';
 
 const RecipesPage = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
+
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500);
+
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [searchTerm]);
+
   const { data: recipes, isLoading, isError, error } = useQuery<RecipeType[], Error>({
-    queryKey: ['recipes'],
-    queryFn: getAllRecipes,
+    queryKey: ['recipes', debouncedSearchTerm],
+    queryFn: () => getAllRecipes(debouncedSearchTerm),
   });
 
   if (isLoading) {
@@ -40,12 +54,22 @@ const RecipesPage = () => {
           Add New Recipe
         </Link>
       </div>
-      <input type="text" placeholder="Search for recipes..." className="mb-4 p-2 border rounded-lg w-full" />
+      <input
+        type="text"
+        placeholder="Search for recipes..."
+        className="mb-4 p-2 border rounded-lg w-full"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
 
       <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-4">
-        {recipes?.map((recipe) => (
-          <Recipe key={recipe.id} id={recipe.id} title={recipe.title} imageUrl={recipe.imageUrl} cookingTime={recipe.cookingTime} difficulty={recipe.difficulty} />
-        ))}
+        {recipes && recipes.length > 0 ? (
+          recipes.map((recipe) => (
+            <Recipe key={recipe.id} id={recipe.id} title={recipe.title} imageUrl={recipe.imageUrl} cookingTime={recipe.cookingTime} difficulty={recipe.difficulty} />
+          ))
+        ) : (
+          <p className="text-gray-600">No recipes found.</p>
+        )}
       </div>
     </main>
   )

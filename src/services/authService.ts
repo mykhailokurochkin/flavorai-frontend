@@ -9,6 +9,7 @@ export const signupUser = async (userData: UserData): Promise<AuthResponse> => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(userData),
+    credentials: 'include',
   });
 
   const data: AuthResponse | ApiError = await response.json();
@@ -27,6 +28,7 @@ export const loginUser = async (credentials: Credentials): Promise<AuthResponse>
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(credentials),
+    credentials: 'include',
   });
 
   const data: AuthResponse | ApiError = await response.json();
@@ -39,7 +41,9 @@ export const loginUser = async (credentials: Credentials): Promise<AuthResponse>
 };
 
 export const getAuthStatus = async (): Promise<User | null> => {
-  const response = await fetch(`${API_BASE_URL}/api/auth/status`);
+  const response = await fetch(`${API_BASE_URL}/api/auth/status`, {
+    credentials: 'include',
+  });
 
   if (response.status === 401) {
     return null;
@@ -57,6 +61,7 @@ export const getAuthStatus = async (): Promise<User | null> => {
 export const logoutUser = async (): Promise<AuthResponse> => {
   const response = await fetch(`${API_BASE_URL}/api/auth/logout`, {
     method: 'POST',
+    credentials: 'include',
   });
 
   const data: AuthResponse | ApiError = await response.json();

@@ -17,9 +17,9 @@ const SignInPage = () => {
     error,
   } = useMutation({
     mutationFn: loginUser,
-    onSuccess: (data) => {
-      refreshAuthStatus(data.user || null);
-      navigate('/');
+    onSuccess: () => {
+      refreshAuthStatus();
+      navigate('/recipes');
     },
     onError: (err) => {
       console.error('Login error:', err.message);

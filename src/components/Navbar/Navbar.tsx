@@ -3,7 +3,7 @@ import Logo from "../Logo/Logo";
 import { useAuth } from '../../context/AuthContext';
 
 const Navbar = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
 
   return (
     <nav className="bg-white text-gray-800 p-4 fixed top-0 left-0 right-0 z-50 shadow-md">
@@ -31,16 +31,26 @@ const Navbar = () => {
             </NavLink>
           </li>
           {isAuthenticated ? (
-            <li>
-              <NavLink
-                to='/my-recipes'
-                className={({ isActive }) =>
-                  isActive ? "font-bold border-b-2 border-green-600 pb-1" : "hover:text-gray-600"
-                }
-              >
-                My Recipes
-              </NavLink>
-            </li>
+            <>
+              <li>
+                <NavLink
+                  to='/my-recipes'
+                  className={({ isActive }) =>
+                    isActive ? "font-bold border-b-2 border-green-600 pb-1" : "hover:text-gray-600"
+                  }
+                >
+                  My Recipes
+                </NavLink>
+              </li>
+              <li>
+                <button
+                  onClick={logout}
+                  className="hover:text-gray-600 focus:outline-none"
+                >
+                  Log out
+                </button>
+              </li>
+            </>
           ) : (
             <li>
               <NavLink

@@ -6,7 +6,7 @@ import { useAuth } from '../../context/AuthContext';
 
 const SignUpPage = () => {
   const navigate = useNavigate();
-  const { refreshAuthStatus } = useAuth(); // Get refreshAuthStatus from context
+  const { refreshAuthStatus } = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -20,8 +20,8 @@ const SignUpPage = () => {
   } = useMutation({
     mutationFn: signupUser,
     onSuccess: () => {
-      refreshAuthStatus(null); // Clear auth status before redirecting to sign-in
-      navigate('/sign-in'); // Redirect to sign-in page on successful registration
+      refreshAuthStatus();
+      navigate('/sign-in');
     },
     onError: (err) => {
       console.error('Signup error:', err.message);
