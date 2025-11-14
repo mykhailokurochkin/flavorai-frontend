@@ -33,12 +33,15 @@ Open your browser and go to: [http://localhost:3000](http://localhost:3000)
 
 ### Option 2: Run Full Application (Frontend + Backend)
 
-This is the recommended approach for a full development experience.
+This is the recommended approach for a full development experience, as the frontend relies heavily on the backend for data and functionality.
 
 **1. Prerequisites:**
 - [Docker Compose](https://docs.docker.com/compose/install/) must be installed.
-- You have cloned the backend repository.
-  - **Backend Repository:** [Link to your backend repository here]
+- **Crucially, you must clone and set up the backend repository.**
+  - **Backend Repository:** [FlavorAI backend Repository](https://github.com/mykhailokurochkin/flavorai-backend)
+
+**Important Note on Connection:**
+The frontend application runs on port `3000` and is configured to connect to the backend service at `http://localhost:4000`. Ensure your backend is running and accessible on this address.
 
 **2. Project Structure:**
 Organize your projects in a parent directory like this:
