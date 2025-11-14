@@ -2,13 +2,11 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getRecipeById, deleteRecipe } from '../../services/recipeService';
 import type { Recipe } from '../../types/recipe';
-import { useAuth } from '../../context/AuthContext';
 
 const RecipeDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { isAuthenticated, user } = useAuth();
 
   const { data: recipe, isLoading, isError, error } = useQuery<Recipe, Error>({
     queryKey: ['recipe', id],
@@ -34,15 +32,6 @@ const RecipeDetailsPage = () => {
       deleteMutation.mutate(id!);
     }
   };
-
-  const isOwner = isAuthenticated && user && recipe && recipe.ownerId === user.id;
-
-  console.log('isAuthenticated:', isAuthenticated);
-  console.log('user:', user);
-  console.log('recipe:', recipe);
-  console.log('recipe?.ownerId:', recipe?.ownerId);
-  console.log('user?.id:', user?.id);
-  console.log('isOwner:', isOwner);
 
   if (isLoading) {
     return (
@@ -82,31 +71,28 @@ const RecipeDetailsPage = () => {
             Back to Recipes
           </button>
 
-          {isOwner && (
-            <div className="space-x-3">
-              <button
-                onClick={() => navigate(`/recipes/edit/${id}`)}
-                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                <svg className="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                  <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.38-2.828-2.828z" />
-                </svg>
-                Edit
-              </button>
-              <button
-                onClick={handleDelete}
-                disabled={deleteMutation.isPending}
-                className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <svg className="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                  <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
-                </svg>
-                {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
-              </button>
-            </div>
-          )}
+          <div className="space-x-3">
+            <button
+              onClick={() => navigate(`/recipes/edit/${id}`)}
+              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              <svg className="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.38-2.828-2.828z" />
+              </svg>
+              Edit
+            </button>
+            <button
+              onClick={handleDelete}
+              disabled={deleteMutation.isPending}
+              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <svg className="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+              {deleteMutation.isPending ? 'Deleting...' : 'Delete'}
+            </button>
+          </div>
         </div>
-
         <div className="relative h-96">
           {recipe.imageUrl ? (
             <img src={recipe.imageUrl} alt={recipe.title} className="w-full h-full object-cover" />
@@ -117,7 +103,6 @@ const RecipeDetailsPage = () => {
             <h1 className="text-5xl font-extrabold text-white leading-tight">{recipe.title}</h1>
           </div>
         </div>
-
         <div className="p-8">
           <div className="flex flex-wrap items-center text-gray-700 text-lg mb-8 space-x-6">
             <span className="flex items-center">
@@ -133,12 +118,10 @@ const RecipeDetailsPage = () => {
               {recipe.difficulty}
             </span>
           </div>
-
           <section className="mb-8">
             <h2 className="text-3xl font-bold text-gray-800 mb-4">Description</h2>
             <p className="text-gray-700 leading-relaxed text-lg">{recipe.description}</p>
           </section>
-
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <section>
               <h2 className="text-3xl font-bold text-gray-800 mb-4">Ingredients</h2>
@@ -148,7 +131,6 @@ const RecipeDetailsPage = () => {
                 ))}
               </ul>
             </section>
-
             <section>
               <h2 className="text-3xl font-bold text-gray-800 mb-4">Instructions</h2>
               <ol className="list-decimal list-inside text-gray-700 space-y-2 text-lg">
