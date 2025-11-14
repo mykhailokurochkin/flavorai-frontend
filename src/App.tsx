@@ -3,7 +3,7 @@ import Navbar from './components/Navbar/Navbar'
 
 const App = () => {
   return (
-    <div className="">
+    <div className="pt-16">
       <header className="">
         <Navbar />
       </header>
