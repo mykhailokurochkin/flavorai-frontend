@@ -1,11 +1,17 @@
-import './App.css'
+import { Outlet } from 'react-router-dom'
+import Navbar from './components/Navbar/Navbar'
 
 const App = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <h1 className="text-5xl font-bold text-blue-600">
-        Hello Tailwind
-      </h1>
+    <div className="">
+      <header className="">
+        <Navbar />
+      </header>
+      <main className="">
+        <Outlet />
+      </main>
+      <footer className="">
+      </footer>
     </div>
   )
 }
