@@ -53,19 +53,27 @@ Organize your projects in a parent directory like this:
 ```
 
 **3. Create `docker-compose.yml`:**
-Create the `docker-compose.yml` file in the parent directory (`/flavorai-app`) with the following content:
+Create the `docker-compose.yml` file in the parent directory (`/flavorai-app`) with the following content.
+**Note:** The `env_file` directive tells Docker Compose to load environment variables from the `.env` file located in your `flavorai-frontend` directory.
+
 ```yaml
 version: '3.8'
 services:
   frontend:
-    build: ./flavorai-frontend
+    build:
+      context: ./flavorai-frontend
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
+    env_file:
+      - ./flavorai-frontend/.env # Load environment variables from frontend's .env file
     depends_on:
       - backend
 
   backend:
-    build: ./flavorai-backend
+    build:
+      context: ./flavorai-backend
+      dockerfile: Dockerfile
     ports:
       - "5000:5000" # Or your backend's port
     environment:

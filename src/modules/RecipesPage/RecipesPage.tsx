@@ -1,9 +1,33 @@
 import { Link } from "react-router-dom";
+import { useQuery } from '@tanstack/react-query';
 import Recipe from "../../components/Recipe/Recipe";
+import { getAllRecipes } from "../../services/recipeService";
+import type { Recipe as RecipeType } from '../../types/recipe'; // Alias Recipe type to avoid conflict
 
 const RecipesPage = () => {
+  const { data: recipes, isLoading, isError, error } = useQuery<RecipeType[], Error>({
+    queryKey: ['recipes'],
+    queryFn: getAllRecipes,
+  });
+
+  if (isLoading) {
+    return (
+      <main className="max-w-7xl mx-auto p-4 text-center">
+        <p>Loading recipes...</p>
+      </main>
+    );
+  }
+
+  if (isError) {
+    return (
+      <main className="max-w-7xl mx-auto p-4 text-center text-red-600">
+        <p>Error: {error?.message || 'Failed to fetch recipes'}</p>
+      </main>
+    );
+  }
+
   return (
-    <main className="p-4">
+    <main className="max-w-7xl mx-auto p-4">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold">All recipes</h2>
         <Link
@@ -18,13 +42,10 @@ const RecipesPage = () => {
       </div>
       <input type="text" placeholder="Search for recipes..." className="mb-4 p-2 border rounded-lg w-full" />
 
-      <div className="flex flex-wrap gap-4">
-        <Recipe />
-        <Recipe />
-        <Recipe />
-        <Recipe />
-        <Recipe />
-        <Recipe />
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-4">
+        {recipes?.map((recipe) => (
+          <Recipe key={recipe.id} id={recipe.id} title={recipe.title} imageUrl={recipe.imageUrl} cookingTime={recipe.cookingTime} difficulty={recipe.difficulty} />
+        ))}
       </div>
     </main>
   )

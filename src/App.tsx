@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom'
 import Navbar from './components/Navbar/Navbar'
 
 const App = () => {
+  console.log('VITE_API_BASE_URL:', import.meta.env.VITE_API_BASE_URL);
   return (
     <div className="pt-16">
       <header className="">
