@@ -8,7 +8,7 @@ interface AuthContextType {
   user: User | null;
   isLoadingAuth: boolean;
   logout: () => void;
-  refreshAuthStatus: () => void;
+  refreshAuthStatus: (userData: User | null) => void; // Changed to accept userData
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -18,36 +18,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
 
-  const { isLoading, refetch } = useQuery({
+  // This query is primarily for initial loading and background re-validation
+  const { isLoading } = useQuery({
     queryKey: ['authStatus'],
     queryFn: getAuthStatus,
-    staleTime: Infinity,
-    gcTime: 1000 * 60 * 60 * 24, // Renamed from cacheTime to gcTime
+    gcTime: 1000 * 60 * 60 * 24,
     retry: false,
-  });
-
-  useEffect(() => {
-    const authData = queryClient.getQueryData<User | null>(['authStatus']);
-    const authState = queryClient.getQueryState(['authStatus']);
-
-    if (authData) {
-      setIsAuthenticated(true);
-      setUser(authData);
-    } else if (authState?.status === 'error') {
-      setIsAuthenticated(false);
-      setUser(null);
-    } else {
-      // If no data and not an error, it means it's still loading or initial state
+    refetchOnWindowFocus: true,
+    onSuccess: (data) => {
+      // Update state based on initial fetch or background refetch
+      if (data) {
+        setIsAuthenticated(true);
+        setUser(data);
+      } else {
+        setIsAuthenticated(false);
+        setUser(null);
+      }
+    },
+    onError: () => {
       setIsAuthenticated(false);
       setUser(null);
     }
-  }, [queryClient, isLoading]); // Depend on queryClient and isLoading to re-evaluate when query state changes
+  });
 
   const logout = async () => {
     try {
       await logoutUser();
-      setIsAuthenticated(false);
-      setUser(null);
+      refreshAuthStatus(null); // Immediately update state
       queryClient.invalidateQueries({ queryKey: ['authStatus'] });
       queryClient.clear();
     } catch (error) {
@@ -55,8 +52,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const refreshAuthStatus = () => {
-    refetch();
+  const refreshAuthStatus = (userData: User | null) => {
+    if (userData) {
+      setIsAuthenticated(true);
+      setUser(userData);
+    } else {
+      setIsAuthenticated(false);
+      setUser(null);
+    }
+    // Also invalidate the query to ensure next background refetch gets fresh data
+    queryClient.invalidateQueries({ queryKey: ['authStatus'] });
   };
 
   const contextValue = {

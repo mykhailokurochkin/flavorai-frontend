@@ -20,7 +20,7 @@ const SignUpPage = () => {
   } = useMutation({
     mutationFn: signupUser,
     onSuccess: () => {
-      refreshAuthStatus();
+      refreshAuthStatus(null); // Clear auth status before redirecting to sign-in
       navigate('/sign-in');
     },
     onError: (err) => {
