@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getAuthStatus, logoutUser } from '../services/authService';
 import type { User } from '../types/auth';
@@ -8,7 +8,7 @@ interface AuthContextType {
   user: User | null;
   isLoadingAuth: boolean;
   logout: () => void;
-  refreshAuthStatus: (userData: User | null) => void; // Changed to accept userData
+  refreshAuthStatus: (userData: User | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -18,7 +18,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
 
-  // This query is primarily for initial loading and background re-validation
   const { isLoading } = useQuery({
     queryKey: ['authStatus'],
     queryFn: getAuthStatus,
@@ -26,7 +25,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     retry: false,
     refetchOnWindowFocus: true,
     onSuccess: (data) => {
-      // Update state based on initial fetch or background refetch
       if (data) {
         setIsAuthenticated(true);
         setUser(data);
@@ -44,7 +42,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = async () => {
     try {
       await logoutUser();
-      refreshAuthStatus(null); // Immediately update state
+      refreshAuthStatus(null);
       queryClient.invalidateQueries({ queryKey: ['authStatus'] });
       queryClient.clear();
     } catch (error) {
@@ -60,7 +58,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setIsAuthenticated(false);
       setUser(null);
     }
-    // Also invalidate the query to ensure next background refetch gets fresh data
     queryClient.invalidateQueries({ queryKey: ['authStatus'] });
   };
 
