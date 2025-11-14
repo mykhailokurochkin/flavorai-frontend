@@ -7,9 +7,36 @@ const Navbar = () => {
       <div className="container mx-auto flex justify-between items-center">
         <Logo />
         <ul className="flex space-x-4">
-          <li><NavLink to='/' className="">Home</NavLink></li>
-          <li><NavLink to='/recipes' className="">Recipes</NavLink></li>
-          <li><NavLink to='/sign-in' className="">Log in</NavLink></li>
+          <li>
+            <NavLink
+              to='/'
+              className={({ isActive }) =>
+                isActive ? "font-bold border-b-2 border-green-600 pb-1" : "hover:text-gray-600"
+              }
+            >
+              Home
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to='/recipes'
+              className={({ isActive }) =>
+                isActive ? "font-bold border-b-2 border-green-600 pb-1" : "hover:text-gray-600"
+              }
+            >
+              Recipes
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to='/sign-in'
+              className={({ isActive }) =>
+                isActive ? "font-bold border-b-2 border-green-600 pb-1" : "hover:text-gray-600"
+              }
+            >
+              Log in
+            </NavLink>
+          </li>
         </ul>
       </div>
     </nav>
